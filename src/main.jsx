@@ -7,6 +7,7 @@ import { ThemeProvider } from 'styled-components'
 import { GlobalStyles } from '~styles/GlobalStyles.js'
 import { theme } from '~utils/constants.js'
 import { BrowserRouter } from 'react-router'
+import { ToastContainer, toast } from 'react-toastify'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -14,6 +15,7 @@ createRoot(document.getElementById('root')).render(
       <GlobalStyles></GlobalStyles>
       <BrowserRouter>
         <App />
+        <ToastContainer />
       </BrowserRouter>
     </ThemeProvider>
   </StrictMode>
