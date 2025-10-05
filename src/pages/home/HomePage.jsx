@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { signOut } from 'firebase/auth'
 import { auth } from '~/firebase/firebase.config'
 import CustomButton from '~/components/button/CustomButton'
+import Header from '~/components/header/Header'
 
 const HomePage = () => {
   const handleSignOut = () => {
@@ -12,7 +13,7 @@ const HomePage = () => {
 
   return (
     <HomePageStyles>
-      <CustomButton onClick={handleSignOut}>Sign Out</CustomButton>
+      <Header />
     </HomePageStyles>
   )
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import styled, { StyleSheetManager } from 'styled-components'
 import PropTypes from 'prop-types'
+import { NavLink } from 'react-router'
 import LoadingSpinner from '../loading/LoadingSpinner'
 
 const CustomButton = ({
@@ -9,8 +10,19 @@ const CustomButton = ({
   onClick = () => {},
   ...props
 }) => {
-  const { isLoading } = props
+  const { isLoading, to } = props
   const child = isLoading ? <LoadingSpinner></LoadingSpinner> : children
+  if (to !== '' && typeof to === 'string') {
+    return (
+      <NavLink to={to}>
+        <StyleSheetManager shouldForwardProp={prop => prop !== 'isLoading'}>
+          <CustomButtonStyles type={type} {...props}>
+            {child}
+          </CustomButtonStyles>
+        </StyleSheetManager>
+      </NavLink>
+    )
+  }
   return (
     <StyleSheetManager shouldForwardProp={prop => prop !== 'isLoading'}>
       <CustomButtonStyles type={type} onClick={onClick} {...props}>
@@ -31,7 +43,6 @@ const CustomButtonStyles = styled.button`
   border-radius: 8px;
   font-weight: 600;
   font-size: 18px;
-  width: 100%;
   height: ${props => props.height || '66px'};
   background-image: linear-gradient(
     to right,

@@ -1,12 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
+import { NavLink } from 'react-router'
 
 const AuthenticationPage = ({ children }) => {
   return (
     <AuthenticationPageStyles>
       <div className="container">
-        <img srcSet="/monkey.png 2x" alt="monkey-blogging" className="logo" />
+        <NavLink to="/">
+          <img srcSet="/monkey.png 2x" alt="monkey-blogging" className="logo" />
+        </NavLink>
         <h1 className="heading">Monkey Blogging</h1>
         {children}
       </div>

@@ -3,6 +3,7 @@ import { AuthProvider } from '~contexts/AuthContext'
 import SignUpPage from '~pages/SignUp/SignUpPage'
 import SignInPage from './pages/SignIn/SignInPage'
 import HomePage from './pages/home/HomePage'
+import NotFoundPage from './pages/notFound/NotFoundPage'
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
           <Route path="/sign-in" element={<SignInPage />} />
-          <Route path="*" element={<>404</>} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </AuthProvider>
     </div>
