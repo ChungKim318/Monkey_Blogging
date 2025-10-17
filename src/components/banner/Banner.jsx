@@ -1,7 +1,10 @@
 import React from 'react'
+import styled from 'styled-components'
 
 const Banner = () => {
-  return <div>Banner</div>
+  return <BannerStyles>Banner</BannerStyles>
 }
+
+const BannerStyles = styled.div``
 
 export default React.memo(Banner)
