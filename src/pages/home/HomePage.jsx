@@ -11,7 +11,6 @@ const HomePage = () => {
     signOut(auth)
   }
 
-  console.log('test page')
   return (
     <HomePageStyles>
       <Header />
