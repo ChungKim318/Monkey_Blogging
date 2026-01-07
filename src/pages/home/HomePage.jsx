@@ -5,6 +5,10 @@ import { signOut } from 'firebase/auth'
 import { auth } from '~/firebase/firebase.config'
 import CustomButton from '~/components/button/CustomButton'
 import Header from '~/components/header/Header'
+import HomeBanner from '~/modules/home/HomeBanner'
+import Layout from '~/components/layout/Layout'
+import HomeFeature from '~/modules/home/HomeFeature'
+import HomeNewest from '~/modules/home/HomeNewest'
 
 const HomePage = () => {
   const handleSignOut = () => {
@@ -13,7 +17,11 @@ const HomePage = () => {
 
   return (
     <HomePageStyles>
-      <Header />
+      <Layout>
+        <HomeBanner />
+        <HomeFeature />
+        <HomeNewest />
+      </Layout>
     </HomePageStyles>
   )
 }
