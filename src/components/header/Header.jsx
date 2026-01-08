@@ -101,7 +101,7 @@ const Header = () => {
 }
 
 const HeaderStyles = styled.div`
-  padding: 40px;
+  padding: 40px 0;
   .header-main {
     display: flex;
     align-items: center;
@@ -116,12 +116,13 @@ const HeaderStyles = styled.div`
     gap: 20px;
     margin-left: 40px;
     font-weight: 500;
+    list-style: none;
   }
   .search {
     margin-left: auto;
     padding: 15px 25px;
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: 8px;
     width: 100%;
     max-width: 320px;
     display: flex;

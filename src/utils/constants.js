@@ -4,4 +4,9 @@ export const theme = {
   grayLight: '#E7ECF3',
   blueLight: '#00A7B4',
   greenLight: '#A4D96C',
+  tertiary: '#3A1097',
+  accent: '#00D1ED',
+  grayF3: '#F3EDFF',
+  gray6B: '#6B6B6B',
+  gray23: '#232323',
 }

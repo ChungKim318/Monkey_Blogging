@@ -1,14 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
-import Header from '~/components/header/Header'
 import PostFeatureItem from '../post/PostFeatureItem'
+import Heading from '~/components/layout/Heading'
 
 const HomeFeatureStyles = styled.div``
 const HomeFeature = () => {
   return (
     <HomeFeatureStyles className="home-block">
       <div className="container">
-        <Header>Bài viết nổi bật</Header>
+        <Heading>Bài viết nổi bật</Heading>
         <div className="grid-layout">
           <PostFeatureItem></PostFeatureItem>
           <PostFeatureItem></PostFeatureItem>

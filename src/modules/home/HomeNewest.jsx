@@ -4,6 +4,7 @@ import Header from '~/components/header/Header'
 import PostNewestLarge from '../post/PostNewestLarge'
 import PostNewestItem from '../post/PostNewestItem'
 import { PostItem } from '../post/PostItem'
+import Heading from '~/components/layout/Heading'
 
 const HomeNewestStyles = styled.div`
   .layout {
@@ -22,9 +23,8 @@ const HomeNewestStyles = styled.div`
 const HomeNewest = () => {
   return (
     <HomeNewestStyles className="home-block">
-      {' '}
       <div className="container">
-        <Header>Mới nhất</Header>
+        <Heading>Mới nhất</Heading>
         <div className="layout">
           <PostNewestLarge></PostNewestLarge>
           <div className="sidebar">

@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { toast } from 'react-toastify'
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { useNavigate, NavLink } from 'react-router'
+import React, { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { NavLink, useNavigate } from 'react-router'
+import { toast } from 'react-toastify'
+import CustomButton from '~/components/button/CustomButton'
 import CustomField from '~/components/field/CustomField'
 import CustomInput from '~/components/input/CustomInput'
+import InputPasswordToggle from '~/components/input/InputPasswordToggle'
 import CustomLabel from '~/components/label/CustomLabel'
-import { SignInSchema } from '~/helpers/yupSchema'
-import IconEyeClose from '~/components/icon/IconEyeClose'
-import IconEyeOpen from '~/components/icon/IconEyeOpen'
-import CustomButton from '~/components/button/CustomButton'
-import { auth } from '~/firebase/firebase.config'
 import { useAuth } from '~/contexts/AuthContext'
+import { auth } from '~/firebase/firebase.config'
+import { SignInSchema } from '~/helpers/yupSchema'
 import AuthenticationPage from '../Auth/AuthenticationPage'
 
 const SignInPage = () => {
@@ -28,8 +27,6 @@ const SignInPage = () => {
     mode: 'onChange',
     resolver: yupResolver(SignInSchema),
   })
-
-  const [togglePassword, setTogglePassword] = useState(false)
 
   useEffect(() => {
     document.title = 'Login Page'
@@ -89,19 +86,7 @@ const SignInPage = () => {
         </CustomField>
         <CustomField>
           <CustomLabel htmlFor="password">Password</CustomLabel>
-          <CustomInput
-            control={control}
-            type={togglePassword ? 'text' : 'password'}
-            name="password"
-            placeholder="Enter your password">
-            {!togglePassword ? (
-              <IconEyeClose
-                onClick={() => setTogglePassword(!togglePassword)}
-              />
-            ) : (
-              <IconEyeOpen onClick={() => setTogglePassword(!togglePassword)} />
-            )}
-          </CustomInput>
+          <InputPasswordToggle control={control} />
         </CustomField>
         <div className="have-account">
           Already have an account?

@@ -10,6 +10,7 @@ const HomeBannerStyles = styled.div`
     ${props => props.theme.primary},
     ${props => props.theme.greenLight}
   );
+  margin-bottom: 60px;
   .banner {
     display: flex;
     justify-content: space-between;
@@ -34,6 +35,9 @@ const HomeBanner = () => {
     <HomeBannerStyles>
       <div className="container">
         <div className="banner">
+          <p className="text-3xl font-bold underline text-red-500">
+            Hello test tailwind
+          </p>
           <div className="banner-content">
             <h1 className="banner-heading">Monkey Blogging</h1>
             <p className="banner-desc">
