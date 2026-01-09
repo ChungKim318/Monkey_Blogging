@@ -35,9 +35,6 @@ const HomeBanner = () => {
     <HomeBannerStyles>
       <div className="container">
         <div className="banner">
-          <p className="text-3xl font-bold underline text-red-500">
-            Hello test tailwind
-          </p>
           <div className="banner-content">
             <h1 className="banner-heading">Monkey Blogging</h1>
             <p className="banner-desc">

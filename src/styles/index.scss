@@ -62,7 +62,7 @@ ol {
 
 .container {
   width: 100%;
-  max-width: 1180px;
+  max-width: 1260px;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -71,7 +71,7 @@ a {
   color: inherit;
 }
 .text-primary {
-  color: #2ebac1;
+  color: #a4d96c;
 }
 .grid-layout {
   display: grid;
@@ -105,5 +105,52 @@ a {
   padding-bottom: 40px;
   @media screen and (min-width: 1024px) {
     padding-bottom: 60px;
+  }
+}
+.entry-content {
+  font-size: 16px;
+  h2,
+  h3,
+  h4 {
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 32px;
+  }
+  h3 {
+    font-size: 26px;
+  }
+  h4 {
+    font-size: 22px;
+  }
+  p {
+    margin-bottom: 20px;
+    line-height: 2;
+  }
+  figure {
+    margin-bottom: 20px;
+  }
+  figure img {
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  figcaption {
+    text-align: center;
+    font-style: italic;
+    font-size: 14px;
+    color: #6b6b6b;
+  }
+  @media screen and (max-width: 1023.98px) {
+    font-size: 14px;
+    h2 {
+      font-size: 26px;
+    }
+    h3 {
+      font-size: 24px;
+    }
+    h4 {
+      font-size: 20px;
+    }
   }
 }
