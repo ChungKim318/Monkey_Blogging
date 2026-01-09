@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import '~styles/index.scss'
+import '~styles/index.css'
 import App from './App.jsx'
 import reportWebVitals from './reportWebVitals.js'
 import { ThemeProvider } from 'styled-components'

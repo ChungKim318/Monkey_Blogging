@@ -16,7 +16,8 @@
       "~pages/*": ["./src/pages/*"],
       "~contexts/*": ["./src/contexts/*"],
       "~styles/*": ["./src/styles/*"],
-      "~firebase/*": ["./src/firebase/*"]
+      "~firebase/*": ["./src/firebase/*"],
+      "~modules/*": ["./src/modules/*"]
     }
   },
   "exclude": ["node_modules", "**/node_modules/*"]

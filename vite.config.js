@@ -19,6 +19,7 @@ export default defineConfig({
       '~contexts': path.resolve(__dirname, './src/contexts'),
       '~styles': path.resolve(__dirname, './src/styles'),
       '~firebase': path.resolve(__dirname, './src/firebase'),
+      '~modules': path.resolve(__dirname, './src/modules'),
     },
   },
 })
