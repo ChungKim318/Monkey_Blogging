@@ -1,8 +1,22 @@
 import React from 'react'
 import styled from 'styled-components'
 import { NavLink } from 'react-router'
+// import supabase from '~/utils/superbase'
 
 const NotFoundPage = () => {
+  // const [instruments, setInstruments] = useState([])
+
+  // useEffect(() => {
+  //   async function getInstruments() {
+  //     const { data: instruments } = await supabase.from('instruments').select()
+
+  //     if (instruments.length > 1) {
+  //       setInstruments(instruments)
+  //     }
+  //   }
+  //   getInstruments()
+  // }, [])
+
   return (
     <NotFoundPageStyles>
       <NavLink to="/" className="logo">
@@ -12,6 +26,13 @@ const NotFoundPage = () => {
       <NavLink to="/" className="back">
         Back to Home
       </NavLink>
+      {/* <div>
+        <ul>
+          {instruments.map(instrument => (
+            <li key={instrument.id}>{instrument.name}</li>
+          ))}
+        </ul>
+      </div> */}
     </NotFoundPageStyles>
   )
 }
