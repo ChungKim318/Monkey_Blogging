@@ -1,14 +1,28 @@
 import { useForm } from 'react-hook-form'
-import React, { useRef, useState } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  // useRef,
+} from 'react'
 import styled from 'styled-components'
 import slugify from 'slugify/slugify'
+import { toast } from 'react-toastify'
 import {
   getStorage,
   ref,
-  uploadBytesResumable,
-  getDownloadURL,
+  // uploadBytesResumable,
+  // getDownloadURL,
   deleteObject,
 } from 'firebase/storage'
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  serverTimestamp,
+} from 'firebase/firestore'
 import CustomField from '~/components/field/CustomField'
 import CustomInput from '~/components/input/CustomInput'
 import CustomLabel from '~/components/label/CustomLabel'
@@ -18,73 +32,95 @@ import { DropDown } from '~/components/dropdown'
 import { postStatus } from '~/utils/constants'
 import ImageUpload from '~/components/image/ImageUpload'
 import Toggle from '~/components/toggle/Toggle'
+import { db } from '~/firebase/firebase.config'
+import { useAuth } from '~/contexts/AuthContext'
 // import useFirebaseImage from '~/hooks/useFirebaseImage'
 
 const PostAddNew = () => {
-  const { control, watch, setValue, handleSubmit, getValues } = useForm({
+  const { userInfo } = useAuth()
+  const { control, watch, setValue, handleSubmit, getValues, reset } = useForm({
     mode: 'onChange',
     defaultValues: {
       title: '',
       slug: '',
       status: 2,
-      category: '',
+      categoryId: '',
       hot: false,
+      // image: '',
     },
   })
-  const [progress, setProgress] = useState(0)
+  // const [progress, setProgress] = useState(0)
   const [image, setImage] = useState('')
+  const [categories, setCategories] = useState([])
+  const [selectCategory, setSelectCategory] = useState('')
 
-  const fileInputRef = useRef(null)
+  // const fileInputRef = useRef(null)
 
   const watchStatus = watch('status')
-  const watchCategory = watch('category')
   const watchHot = watch('hot')
+
+  // const { image, progress, handleSelectImage, handleDeleteImage } = useFirebaseImage(setValue, getValues)
 
   const addPostHandler = async values => {
     // values.preventDefault()
     const cloneValues = { ...values }
-    cloneValues.slug = slugify(values.slug || values.title)
+    cloneValues.slug = slugify(values.slug || values.title, {
+      lower: true,
+    })
     cloneValues.status = Number(values.status)
-
-    console.log('🚀 ~ addPostHandler ~ cloneValues:', cloneValues)
+    const colRef = collection(db, 'posts')
+    await addDoc(colRef, {
+      ...cloneValues,
+      userId: userInfo.uid,
+      createdAt: serverTimestamp,
+      // image: cloneValues.image,
+    })
+    toast.success('Create post successfully')
+    reset({
+      title: '',
+      slug: '',
+      status: 2,
+      categoryId: '',
+      hot: false,
+      // image: '',
+    })
+    // console.log('🚀 ~ addPostHandler ~ cloneValues:', cloneValues)
     // handleUploadImage(cloneValues.image)
   }
 
-  // const { image, progress, handleSelectImage, handleDeleteImage } = useFirebaseImage(setValue, getValues)
+  // const handleUploadImage = file => {
+  //   const storage = getStorage()
+  //   const storageRef = ref(storage, 'images/' + file.name)
+  //   const uploadTask = uploadBytesResumable(storageRef, file)
 
-  const handleUploadImage = file => {
-    const storage = getStorage()
-    const storageRef = ref(storage, 'images/' + file.name)
-    const uploadTask = uploadBytesResumable(storageRef, file)
-
-    uploadTask.on(
-      'state_changed',
-      snapshot => {
-        const progressPercent =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        setProgress(progressPercent)
-        switch (snapshot.state) {
-          case 'paused':
-            console.log('Upload is paused')
-            break
-          case 'running':
-            console.log('Upload is running')
-            break
-          default:
-            console.log('Nothing at all')
-        }
-      },
-      error => {
-        console.log('Error Update: ', error)
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then(downloadURL => {
-          console.log('File available at', downloadURL)
-          setImage(downloadURL)
-        })
-      }
-    )
-  }
+  //   uploadTask.on(
+  //     'state_changed',
+  //     snapshot => {
+  //       const progressPercent =
+  //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+  //       setProgress(progressPercent)
+  //       switch (snapshot.state) {
+  //         case 'paused':
+  //           console.log('Upload is paused')
+  //           break
+  //         case 'running':
+  //           console.log('Upload is running')
+  //           break
+  //         default:
+  //           console.log('Nothing at all')
+  //       }
+  //     },
+  //     error => {
+  //       console.log('Error Update: ', error)
+  //     },
+  //     () => {
+  //       getDownloadURL(uploadTask.snapshot.ref).then(downloadURL => {
+  //         console.log('File available at', downloadURL)
+  //         setImage(downloadURL)
+  //       })
+  //     }
+  //   )
+  // }
 
   const onSelectImage = e => {
     const file = e.target.files[0]
@@ -107,6 +143,31 @@ const PostAddNew = () => {
         console.log('Can not delete image', error)
       })
   }
+
+  const handleClickOption = item => {
+    setValue('categoryId', item.id)
+    setSelectCategory(item)
+  }
+
+  useEffect(() => {
+    async function getData() {
+      const colRef = collection(db, 'categories')
+      const q = query(colRef, where('status', '==', 1))
+      const querySnapshot = await getDocs(q)
+      let result = []
+      querySnapshot.forEach(doc => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, ' => ', doc.data())
+        result.push({
+          id: doc.id,
+          ...doc.data(),
+        })
+      })
+      console.log('🚀 ~ getData ~ result:', result)
+      setCategories(result)
+    }
+    getData()
+  }, [])
 
   return (
     <PostAddNewStyles>
@@ -134,7 +195,7 @@ const PostAddNew = () => {
             <CustomLabel>Image</CustomLabel>
             <ImageUpload
               onChange={onSelectImage}
-              progress={progress}
+              // progress={progress}
               image={image}
               handleDeleteImage={handleDeleteImage}
             />
@@ -148,6 +209,30 @@ const PostAddNew = () => {
             {/* <CustomButton onClick={() => fileInputRef.current.click()}>
               Choose Files
             </CustomButton> */}
+          </CustomField>
+          <CustomField>
+            <CustomLabel>Category</CustomLabel>
+            <DropDown>
+              <DropDown.Select
+                placeholder={`${
+                  selectCategory?.name || 'Select category'
+                }`}></DropDown.Select>
+              <DropDown.List>
+                {categories.length > 0 &&
+                  categories.map(item => (
+                    <DropDown.Option
+                      key={item.id}
+                      onClick={() => handleClickOption(item)}>
+                      {item.name}
+                    </DropDown.Option>
+                  ))}
+              </DropDown.List>
+            </DropDown>
+            {/* {selectCategory && (
+              <span className="inline-block p-4 rounded-lg bg-gray-200 text-sm font-medium">
+                {selectCategory.name}
+              </span>
+            )} */}
           </CustomField>
           <CustomField>
             <CustomLabel>Status</CustomLabel>
@@ -175,10 +260,10 @@ const PostAddNew = () => {
               </Radio>
             </div>
           </CustomField>
-          <CustomField>
+          {/* <CustomField>
             <CustomLabel>Author</CustomLabel>
             <CustomInput control={control} placeholder="Find the author" />
-          </CustomField>
+          </CustomField> */}
           <CustomField>
             <CustomLabel>Feature post</CustomLabel>
             <Toggle
@@ -187,16 +272,6 @@ const PostAddNew = () => {
               {' '}
             </Toggle>
           </CustomField>
-          {/* <CustomField>
-            <CustomLabel>Category</CustomLabel>
-            <DropDown>
-              <DropDown.Option>Knowledge</DropDown.Option>
-              <DropDown.Option>Blockchain</DropDown.Option>
-              <DropDown.Option>Setup</DropDown.Option>
-              <DropDown.Option>Nature</DropDown.Option>
-              <DropDown.Option>Developer</DropDown.Option>
-            </DropDown>
-          </CustomField> */}
 
           <CustomButton type="submit" className="mx-auto w-62.5">
             Add new post

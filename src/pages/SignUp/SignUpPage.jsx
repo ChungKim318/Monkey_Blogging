@@ -1,6 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import { addDoc, collection } from 'firebase/firestore'
+import {
+  //  addDoc,
+  collection,
+  setDoc,
+  doc,
+} from 'firebase/firestore'
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { NavLink, useNavigate } from 'react-router'
@@ -13,6 +18,7 @@ import CustomLabel from '~/components/label/CustomLabel'
 import { auth, db } from '~/firebase/firebase.config'
 import { SignUpSchema } from '~/helpers/yupSchema'
 import AuthenticationPage from '../Auth/AuthenticationPage'
+import slugify from 'slugify/slugify'
 
 const SignUpPage = () => {
   const navigate = useNavigate()
@@ -54,12 +60,19 @@ const SignUpPage = () => {
       })
       const colRef = collection(db, 'users')
 
-      await addDoc(colRef, {
+      await setDoc(doc(db, 'users', auth.currentUser.uid), {
         name: values.fullName,
         email: values.email,
         password: values.password,
-        uid: user.user.uid,
+        userName: slugify(values.name, { lower: true }),
       })
+
+      // await addDoc(colRef, {
+      //   name: values.fullName,
+      //   email: values.email,
+      //   password: values.password,
+      //   uid: user.user.uid,
+      // })
 
       toast.success('Sign up successfully!')
 

@@ -18,6 +18,7 @@ const HomePage = () => {
   return (
     <HomePageStyles>
       <Layout>
+        <CustomButton onClick={handleSignOut}>Sign out</CustomButton>
         <HomeBanner />
         <HomeFeature />
         <HomeNewest />

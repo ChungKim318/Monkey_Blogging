@@ -3,8 +3,12 @@ import styled from 'styled-components'
 import { Outlet } from 'react-router'
 import DashBoardHeader from './DashBoardHeader'
 import SideBar from './SideBar'
+import { useAuth } from '~/contexts/AuthContext'
+import NotFoundPage from '~/pages/notFound/NotFoundPage'
 
 const DashBoardLayout = ({ children }) => {
+  const { userInfo } = useAuth()
+  if (!userInfo) return <NotFoundPage></NotFoundPage>
   return (
     <DashBoardLayoutStyles>
       <DashBoardHeader />
