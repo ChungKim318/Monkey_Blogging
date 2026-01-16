@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
+import { doc, getDoc } from 'firebase/firestore'
+import slugify from 'slugify/slugify'
 import PostCategory from './PostCategory'
 import PostTitle from './PostTitle'
 import PostMeta from './PostMeta'
 import PostImage from './PostImage'
-import { doc, getDoc } from 'firebase/firestore'
 import { db } from '~/firebase/firebase.config'
 
 const PostFeatureItemStyles = styled.div`
@@ -70,7 +71,7 @@ const PostFeatureItem = ({ data }) => {
       if (data.userId) {
         const docRef = doc(db, 'users', data.userId)
         const docSnap = await getDoc(docRef)
-        console.log('🚀 ~ fetchUser ~ docSnap:', docSnap.data())
+        // console.log('🚀 ~ fetchUser ~ docSnap:', docSnap.data())
         if (docSnap.data()) {
           setUser(docSnap.data())
         }
@@ -80,7 +81,11 @@ const PostFeatureItem = ({ data }) => {
   }, [data.userId])
 
   if (!data || !data.id) return null
-  console.log(user)
+
+  const date = data?.createdAt?.seconds
+    ? new Date(data?.createdAt?.seconds * 1000)
+    : new Date()
+  const formatDate = new Date(date).toLocaleDateString('vi-VN')
 
   return (
     <PostFeatureItemStyles>
@@ -94,10 +99,18 @@ const PostFeatureItem = ({ data }) => {
       <div className="post-overlay"></div>
       <div className="post-content">
         <div className="post-top">
-          {category?.name && <PostCategory>{category.name}</PostCategory>}
-          <PostMeta authorName={user?.name} />
+          {category?.name && (
+            <PostCategory to={category.slug}>{category.name}</PostCategory>
+          )}
+          <PostMeta
+            authorName={user?.name}
+            to={(slugify(user?.name || ''), { lower: true })}
+            date={formatDate}
+          />
         </div>
-        <PostTitle size="big">{data.title}</PostTitle>
+        <PostTitle size="big" to={data.slug}>
+          {data.title}
+        </PostTitle>
       </div>
     </PostFeatureItemStyles>
   )

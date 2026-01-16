@@ -53,39 +53,50 @@ const PostAddNew = () => {
   const [image, setImage] = useState('')
   const [categories, setCategories] = useState([])
   const [selectCategory, setSelectCategory] = useState('')
+  const [loading, setLoading] = useState(false)
 
   // const fileInputRef = useRef(null)
 
   const watchStatus = watch('status')
   const watchHot = watch('hot')
 
-  // const { image, progress, handleSelectImage, handleDeleteImage } = useFirebaseImage(setValue, getValues)
+  // const { image, progress, handleResetUpload, handleSelectImage, handleDeleteImage } = useFirebaseImage(setValue, getValues)
 
   const addPostHandler = async values => {
     // values.preventDefault()
-    const cloneValues = { ...values }
-    cloneValues.slug = slugify(values.slug || values.title, {
-      lower: true,
-    })
-    cloneValues.status = Number(values.status)
-    const colRef = collection(db, 'posts')
-    await addDoc(colRef, {
-      ...cloneValues,
-      userId: userInfo.uid,
-      createdAt: serverTimestamp,
-      // image: cloneValues.image,
-    })
-    toast.success('Create post successfully')
-    reset({
-      title: '',
-      slug: '',
-      status: 2,
-      categoryId: '',
-      hot: false,
-      // image: '',
-    })
-    // console.log('🚀 ~ addPostHandler ~ cloneValues:', cloneValues)
-    // handleUploadImage(cloneValues.image)
+    setLoading(true)
+    try {
+      const cloneValues = { ...values }
+      cloneValues.slug = slugify(values.slug || values.title, {
+        lower: true,
+      })
+      cloneValues.status = Number(values.status)
+      const colRef = collection(db, 'posts')
+      await addDoc(colRef, {
+        ...cloneValues,
+        userId: userInfo.uid,
+        createdAt: serverTimestamp(),
+        // image: cloneValues.image,
+      })
+      toast.success('Create post successfully')
+      reset({
+        title: '',
+        slug: '',
+        status: 2,
+        categoryId: '',
+        hot: false,
+        // image: '',
+      })
+      // handleResetUpload()
+      setSelectCategory({})
+      // console.log('🚀 ~ addPostHandler ~ cloneValues:', cloneValues)
+      // handleUploadImage(cloneValues.image)
+    } catch (error) {
+      setLoading(false)
+      console.log('🚀 ~ addPostHandler ~ error:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   // const handleUploadImage = file => {
@@ -167,6 +178,10 @@ const PostAddNew = () => {
       setCategories(result)
     }
     getData()
+  }, [])
+
+  useEffect(() => {
+    document.title = 'Monkey Blogging - Add new post'
   }, [])
 
   return (
@@ -273,7 +288,11 @@ const PostAddNew = () => {
             </Toggle>
           </CustomField>
 
-          <CustomButton type="submit" className="mx-auto w-62.5">
+          <CustomButton
+            type="submit"
+            className="mx-auto w-62.5"
+            isLoading={loading}
+            disabled={loading}>
             Add new post
           </CustomButton>
         </div>
