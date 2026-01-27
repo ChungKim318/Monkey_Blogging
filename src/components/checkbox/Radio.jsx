@@ -23,7 +23,21 @@ const Radio = ({ checked = 'checked', children, control, name, ...rest }) => {
             checked
               ? 'bg-primary border-primary text-white'
               : 'border-gray-200 text-transparent'
-          }`}></div>
+          }`}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 mx-auto my-0.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </div>
         <span>{children}</span>
       </div>
     </label>

@@ -15,6 +15,8 @@ import CategoryAddNew from '~modules/category/CategoryAddNew'
 import UserManage from '~modules/user/UserManage'
 import UserProfile from '~modules/user/UserProfile'
 import UserAddNew from '~modules/user/UserAddNew'
+import CategoryUpdate from '~modules/category/CategoryUpdate'
+import UserUpdate from '~modules/user/UserUpdate'
 
 function App() {
   return (
@@ -33,8 +35,13 @@ function App() {
             <Route path="/manage/add-post" element={<PostAddNew />} />
             <Route path="/manage/category" element={<CategoryManage />} />
             <Route path="/manage/add-category" element={<CategoryAddNew />} />
+            <Route
+              path="/manage/update-category"
+              element={<CategoryUpdate />}
+            />
             <Route path="/manage/user" element={<UserManage />} />
             <Route path="/manage/add-user" element={<UserAddNew />} />
+            <Route path="manage/update-user" element={<UserUpdate />} />
             <Route path="/profile" element={<UserProfile />} />
           </Route>
         </Routes>

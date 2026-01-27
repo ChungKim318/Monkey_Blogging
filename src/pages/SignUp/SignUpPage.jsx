@@ -5,6 +5,7 @@ import {
   collection,
   setDoc,
   doc,
+  serverTimestamp,
 } from 'firebase/firestore'
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -19,6 +20,7 @@ import { auth, db } from '~/firebase/firebase.config'
 import { SignUpSchema } from '~/helpers/yupSchema'
 import AuthenticationPage from '../Auth/AuthenticationPage'
 import slugify from 'slugify/slugify'
+import { userRole, userStatus } from '~/utils/constants'
 
 const SignUpPage = () => {
   const navigate = useNavigate()
@@ -57,14 +59,22 @@ const SignUpPage = () => {
 
       await updateProfile(auth.currentUser, {
         displayName: values.fullName,
+        photoUrl:
+          'https://i.pinimg.com/1200x/70/95/00/709500826d1e49399ec1b30b06864dfd.jpg',
       })
+
       const colRef = collection(db, 'users')
 
       await setDoc(doc(db, 'users', auth.currentUser.uid), {
         name: values.fullName,
         email: values.email,
         password: values.password,
-        userName: slugify(values.name, { lower: true }),
+        userName: slugify(values.fullName, { lower: true }),
+        avatar:
+          'https://i.pinimg.com/1200x/70/95/00/709500826d1e49399ec1b30b06864dfd.jpg',
+        status: userStatus.ACTIVE,
+        role: userRole.USER,
+        createdAt: serverTimestamp(),
       })
 
       // await addDoc(colRef, {

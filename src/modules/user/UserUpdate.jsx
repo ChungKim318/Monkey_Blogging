@@ -1,22 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import slugify from 'slugify/slugify'
+import { useSearchParams } from 'react-router'
 import { toast } from 'react-toastify'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
+import DashBoardHeading from '../dashboard/DashBoardHeading'
+import ImageUpload from '~/components/image/ImageUpload'
 import CustomField from '~/components/field/CustomField'
 import CustomInput from '~/components/input/CustomInput'
 import CustomLabel from '~/components/label/CustomLabel'
-import DashBoardHeading from '~modules/dashboard/DashBoardHeading'
 import FieldCheckBox from '~/components/field/FieldCheckBox'
 import Radio from '~/components/checkbox/Radio'
-import CustomButton from '~/components/button/CustomButton'
-import ImageUpload from '~/components/image/ImageUpload'
 import { userRole, userStatus } from '~/utils/constants'
-import { auth, db } from '~/firebase/firebase.config'
+import CustomButton from '~/components/button/CustomButton'
+import { db } from '~/firebase/firebase.config'
 // import useFirebaseImage from '~/hooks/useFirebaseImage'
 
-const UserAddNew = () => {
+const UserUpdate = () => {
   const {
     control,
     watch,
@@ -26,87 +25,88 @@ const UserAddNew = () => {
     setValue, 
     getValues,
    */
-    formState: { isValid, isSubmitting },
-  } = useForm({
-    mode: 'onChange',
-    defaultValues: {
-      name: '',
-      email: '',
-      password: '',
-      userName: '',
-      status: userStatus.ACTIVE,
-      role: userRole.USER,
-      avatar: '',
-      createdAt: new Date(),
-    },
-  })
+    formState: { isSubmitting, isValid },
+  } = useForm()
+
   const watchStatus = watch('status')
   const watchRole = watch('role')
 
-  // const { image, progress, handleResetUpload, handleSelectImage, handleDeleteImage } = useFirebaseImage(setValue, getValues)
+  const [params] = useSearchParams()
+  const userId = params.get('id')
 
-  const handleCreateUser = async values => {
+  /* 
+    configure image upload
+    const imageUrl = getValues('avatar')
+    const imageRegex = /%2F(\S+)\?/gm.exec(imageUrl)?
+    const imageName = imageRegex?.length > 0 ? imageRegex?.[1] : ''
+
+    async function deleteAvatar() {
+      const colRef = doc(db, 'users', userId)
+      await updateDoc(colRef, {
+        avatar: '',
+      })
+    }
+
+    const { image, setImage, progress, handleResetUpload, handleSelectImage, handleDeleteImage } = useFirebaseImage(setValue, getValues, imageName, deleteAvatar)
+
+    useEffect(() => {
+      setImage(imageUrl)
+      }, [imageUrl, setImage])
+  */
+
+  const handleUpdateUser = async values => {
     if (!isValid) return
     try {
-      await createUserWithEmailAndPassword(auth, values.email, values.password)
-      await addDoc(collection(db, 'users'), {
-        name: values.fullName,
-        email: values.email,
-        password: values.password,
-        userName: slugify(values.userName || values.fullName, {
-          lower: true,
-          replacement: ' ',
-          trim: true,
-        }),
-        avatar:
-          //  image ||
-          'https://i.pinimg.com/1200x/70/95/00/709500826d1e49399ec1b30b06864dfd.jpg',
-        status: Number(values.status),
-        role: Number(values.role),
-        createdAt: serverTimestamp(),
+      const colRef = doc(db, 'users', userId)
+      await updateDoc(colRef, {
+        ...values,
+        // avatar: image
       })
-      toast.success(`Create new user with email: ${values.email} successfully!`)
-      reset({
-        name: '',
-        email: '',
-        password: '',
-        userName: '',
-        status: userStatus.ACTIVE,
-        role: userRole.USER,
-        avatar: '',
-        createdAt: new Date(),
-      })
-      /* 
-      handleResetUpload()
-    */
+      toast.success('Update user successfully!')
     } catch (error) {
-      console.log('🚀 ~ handleCreateUser ~ error:', error)
-      toast.error(`Can not create new user!`)
+      toast.error('Update user failed!')
+      console.log(error)
     }
   }
+
+  useEffect(() => {
+    async function fetchData() {
+      if (!userId) return
+      try {
+        const colRef = doc(db, 'users', userId)
+        const docData = await getDoc(colRef)
+        reset(docData && docData.data())
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchData()
+  }, [userId, reset])
+
+  if (!userId) return null
 
   return (
     <div>
       <DashBoardHeading
-        title="New user"
-        desc="Add new user to system"></DashBoardHeading>
-      <form autoComplete="none" onSubmit={handleSubmit(handleCreateUser)}>
+        title="Update user"
+        desc="Update user information"></DashBoardHeading>
+      <form autoComplete="none" onSubmit={handleSubmit(handleUpdateUser)}>
         <div className="w-50 h-50 rounded-full mx-auto mb-10">
           <ImageUpload
             className="rounded-full! h-full"
             /* 
-              onChange={handleSelectImage}
-              handleDeleteImage={handleDeleteImage}
-              progress={progress}
-              image={image}
-              */
+                onChange={handleSelectImage}
+                handleDeleteImage={handleDeleteImage}
+                progress={progress}
+                image={image}
+                */
           />
         </div>
         <div className="form-layout">
           <CustomField>
             <CustomLabel>Fullname</CustomLabel>
             <CustomInput
-              name="fullName"
+              name="name"
               placeholder="Enter your fullname"
               control={control}></CustomInput>
           </CustomField>
@@ -196,11 +196,11 @@ const UserAddNew = () => {
           className="mx-auto w-50"
           isLoading={isSubmitting}
           disabled={isSubmitting}>
-          Add new user
+          Update
         </CustomButton>
       </form>
     </div>
   )
 }
 
-export default React.memo(UserAddNew)
+export default React.memo(UserUpdate)

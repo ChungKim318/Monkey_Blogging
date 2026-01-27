@@ -24,7 +24,7 @@ const NotFoundPage = () => {
       </NavLink>
       <h1 className="heading">404 Not Found</h1>
       <NavLink to="/" className="back">
-        Back to Home
+        Go Back
       </NavLink>
       {/* <div>
         <ul>

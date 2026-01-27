@@ -60,6 +60,12 @@ const CustomButtonStyles = styled.button`
         ${props => props.theme.greenLight}
       );
     `}
+  ${props =>
+    props.kind === 'ghost' &&
+    css`
+      color: ${props => props.theme.primary};
+      background-color: rgba(29, 192, 113, 0.1);
+    `};
   &:disabled {
     opacity: 0.5;
     pointer-events: none;
@@ -71,7 +77,7 @@ CustomButton.propTypes = {
   onClick: PropTypes.func,
   isLoading: PropTypes.bool,
   children: PropTypes.node,
-  kind: PropTypes.oneOf(['primary', 'secondary']),
+  kind: PropTypes.oneOf(['primary', 'secondary', 'ghost']),
 }
 
 export default React.memo(CustomButton)
