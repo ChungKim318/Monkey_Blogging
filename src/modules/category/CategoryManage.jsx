@@ -23,7 +23,7 @@ import { db } from '~/firebase/firebase.config'
 import DashBoardHeading from '~/modules/dashboard/DashBoardHeading'
 import { categoryStatus } from '~/utils/constants'
 
-const CATEGORY_PER_PAGE = 1
+const CATEGORY_PER_PAGE = 5
 
 const CategoryManage = () => {
   const [categoryList, setCategoryList] = useState([])
@@ -176,7 +176,6 @@ const CategoryManage = () => {
           <CustomButton className="mx-auto" onClick={handleLoadMoreCategory}>
             Load more
           </CustomButton>
-          {total}
         </div>
       )}
     </div>

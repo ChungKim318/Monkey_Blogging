@@ -5,12 +5,15 @@ import CustomButton from '~/components/button/CustomButton'
 const DashBoardHeader = () => {
   return (
     <DashBoardHeaderStyles>
-      <CustomButton to="/dashboard" className="header-button" height="52px">
+      <CustomButton
+        to="/manage/add-post"
+        className="header-button"
+        height="52px">
         Write new post
       </CustomButton>
       <div className="header-avatar">
         <img
-          src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3270&q=80"
+          src="https://i.pinimg.com/736x/11/de/fc/11defce1bbc28f8a2a810aaa241a104d.jpg"
           alt=""
         />
       </div>

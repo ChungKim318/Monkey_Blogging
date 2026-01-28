@@ -14,7 +14,7 @@ const Toggle = props => {
         onChange={() => {}}
       />
       <div
-        className={`inline-block w-17.5 h-9 relative cursor-pointer rounded-full p-1 transition-all ${
+        className={`inline-block w-17.5 h-10.5 relative cursor-pointer rounded-full p-1 transition-all ${
           on ? 'bg-green-500' : 'bg-gray-300'
         }`}
         {...rest}>

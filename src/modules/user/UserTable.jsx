@@ -4,30 +4,57 @@ import { useNavigate } from 'react-router'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 // import { deleteUser } from 'firebase/auth'
-import { collection, onSnapshot, deleteDoc, doc } from 'firebase/firestore'
+import {
+  collection,
+  onSnapshot,
+  deleteDoc,
+  doc,
+  query,
+  startAfter,
+  limit,
+  getDocs,
+} from 'firebase/firestore'
 import { db } from '~/firebase/firebase.config'
 import ActionEdit from '~/components/action/ActionEdit'
 import ActionDelete from '~/components/action/ActionDelete'
 import { userRole, userStatus } from '~/utils/constants'
 import LabelStatus from '~/components/label/LabelStatus'
+import CustomButton from '~/components/button/CustomButton'
+
+const USER_PER_PAGE = 5
 
 const UserTable = () => {
   const navigate = useNavigate()
 
   const [userList, setUserList] = useState([])
+  const [lastDoc, setLastDoc] = useState()
+  const [total, setTotal] = useState(0)
 
   useEffect(() => {
-    const colRef = collection(db, 'users')
-    onSnapshot(colRef, snapshot => {
-      let results = []
-      snapshot.forEach(doc => {
-        results.push({
-          id: doc.id,
-          ...doc.data(),
-        })
+    async function fetchData() {
+      const colRef = collection(db, 'users')
+      const newRef = query(colRef, limit(USER_PER_PAGE))
+
+      const documentSnapshots = await getDocs(newRef)
+      const lastVisible =
+        documentSnapshots.docs[documentSnapshots.docs.length - 1]
+
+      onSnapshot(colRef, snapshot => {
+        setTotal(snapshot.size)
       })
-      setUserList(results)
-    })
+      onSnapshot(newRef, snapshot => {
+        let results = []
+        snapshot.forEach(doc => {
+          results.push({
+            id: doc.id,
+            ...doc.data(),
+          })
+        })
+        setUserList(results)
+      })
+      setLastDoc(lastVisible)
+    }
+    fetchData()
   }, [])
 
   const renderLabelStatus = status => {
@@ -74,6 +101,28 @@ const UserTable = () => {
         Swal.fire('Deleted!', 'Your file has been deleted.', 'success')
       }
     })
+  }
+
+  const handleLoadMore = async () => {
+    const nextRef = query(
+      collection(db, 'users'),
+      startAfter(lastDoc),
+      limit(USER_PER_PAGE)
+    )
+    onSnapshot(nextRef, snapshot => {
+      let result = []
+      snapshot.forEach(doc => {
+        result.push({
+          id: doc.id,
+          ...doc.data(),
+        })
+      })
+      setUserList([...userList, ...result])
+    })
+    const documentSnapshots = await getDocs(nextRef)
+    const lastVisible =
+      documentSnapshots.docs[documentSnapshots.docs.length - 1]
+    setLastDoc(lastVisible)
   }
 
   return (
@@ -137,6 +186,13 @@ const UserTable = () => {
             ))}
         </tbody>
       </Table>
+      {total > userList.length && (
+        <div className="mt-10">
+          <CustomButton className="mx-auto" onClick={handleLoadMore}>
+            Load more
+          </CustomButton>
+        </div>
+      )}
     </div>
   )
 }

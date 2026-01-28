@@ -21,6 +21,8 @@ import {
   getDocs,
   addDoc,
   serverTimestamp,
+  doc,
+  getDoc,
 } from 'firebase/firestore'
 import CustomField from '~/components/field/CustomField'
 import CustomInput from '~/components/input/CustomInput'
@@ -43,8 +45,9 @@ const PostAddNew = () => {
       title: '',
       slug: '',
       status: 2,
-      categoryId: '',
+      category: {},
       hot: false,
+      user: {},
       // image: '',
     },
   })
@@ -53,6 +56,47 @@ const PostAddNew = () => {
   const [categories, setCategories] = useState([])
   const [selectCategory, setSelectCategory] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    async function fetchUserData() {
+      if (!userInfo?.email) return
+
+      const q = query(
+        collection(db, 'users'),
+        where('email', '==', userInfo?.email)
+      )
+      const querySnapshot = await getDocs(q)
+      querySnapshot.forEach(doc => {
+        setValue('user', {
+          id: doc.id,
+          ...doc.data(),
+        })
+      })
+    }
+    fetchUserData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userInfo?.email])
+
+  useEffect(() => {
+    async function getData() {
+      const colRef = collection(db, 'categories')
+      const q = query(colRef, where('status', '==', 1))
+      const querySnapshot = await getDocs(q)
+      let result = []
+      querySnapshot.forEach(doc => {
+        result.push({
+          id: doc.id,
+          ...doc.data(),
+        })
+      })
+      setCategories(result)
+    }
+    getData()
+  }, [])
+
+  useEffect(() => {
+    document.title = 'Monkey Blogging - Add new post'
+  }, [])
 
   // const fileInputRef = useRef(null)
 
@@ -68,12 +112,13 @@ const PostAddNew = () => {
       const cloneValues = { ...values }
       cloneValues.slug = slugify(values.slug || values.title, {
         lower: true,
+        trim: true,
       })
       cloneValues.status = Number(values.status)
+      console.log('🚀 ~ addPostHandler ~ cloneValues:', cloneValues)
       const colRef = collection(db, 'posts')
       await addDoc(colRef, {
         ...cloneValues,
-        userId: userInfo.uid,
         createdAt: serverTimestamp(),
         // image: cloneValues.image,
       })
@@ -82,13 +127,13 @@ const PostAddNew = () => {
         title: '',
         slug: '',
         status: 2,
-        categoryId: '',
         hot: false,
+        category: {},
+        user: {},
         // image: '',
       })
-      // handleResetUpload()
       setSelectCategory({})
-      // console.log('🚀 ~ addPostHandler ~ cloneValues:', cloneValues)
+      // handleResetUpload()
       // handleUploadImage(cloneValues.image)
     } catch (error) {
       setLoading(false)
@@ -154,34 +199,15 @@ const PostAddNew = () => {
       })
   }
 
-  const handleClickOption = item => {
-    setValue('categoryId', item.id)
+  const handleClickOption = async item => {
+    const colRef = doc(db, 'categories', item.id)
+    const docData = await getDoc(colRef)
+    setValue('category', {
+      id: docData.id,
+      ...docData.data(),
+    })
     setSelectCategory(item)
   }
-
-  useEffect(() => {
-    async function getData() {
-      const colRef = collection(db, 'categories')
-      const q = query(colRef, where('status', '==', 1))
-      const querySnapshot = await getDocs(q)
-      let result = []
-      querySnapshot.forEach(doc => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, ' => ', doc.data())
-        result.push({
-          id: doc.id,
-          ...doc.data(),
-        })
-      })
-      console.log('🚀 ~ getData ~ result:', result)
-      setCategories(result)
-    }
-    getData()
-  }, [])
-
-  useEffect(() => {
-    document.title = 'Monkey Blogging - Add new post'
-  }, [])
 
   return (
     <PostAddNewStyles>
@@ -282,14 +308,12 @@ const PostAddNew = () => {
             <CustomLabel>Feature post</CustomLabel>
             <Toggle
               on={watchHot === true}
-              onClick={() => setValue('hot', !watchHot)}>
-              {' '}
-            </Toggle>
+              onClick={() => setValue('hot', !watchHot)}></Toggle>
           </CustomField>
 
           <CustomButton
             type="submit"
-            className="mx-auto w-62.5"
+            className="mx-auto"
             isLoading={loading}
             disabled={loading}>
             Add new post

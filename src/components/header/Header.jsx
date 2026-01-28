@@ -88,10 +88,7 @@ const Header = () => {
             </CustomButton>
           ) : (
             <div className="header-author">
-              <span>Welcome back, </span>
-              <strong className="text-primary">
-                {getLastName(userInfo?.displayName)}
-              </strong>
+              <CustomButton to="/dashboard">Dashboard</CustomButton>
             </div>
           )}
         </div>

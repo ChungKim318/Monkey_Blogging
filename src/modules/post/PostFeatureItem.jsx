@@ -1,12 +1,10 @@
-import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { doc, getDoc } from 'firebase/firestore'
 import slugify from 'slugify/slugify'
-import PostCategory from './PostCategory'
+import React from 'react'
 import PostTitle from './PostTitle'
 import PostMeta from './PostMeta'
 import PostImage from './PostImage'
-import { db } from '~/firebase/firebase.config'
+import PostCategory from './PostCategory'
 
 const PostFeatureItemStyles = styled.div`
   width: 100%;
@@ -54,31 +52,31 @@ const PostFeatureItemStyles = styled.div`
 `
 
 const PostFeatureItem = ({ data }) => {
-  const [category, setCategory] = React.useState('')
-  const [user, setUser] = React.useState('')
+  // const [category, setCategory] = React.useState('')
+  // const [user, setUser] = React.useState('')
 
-  useEffect(() => {
-    async function fetch() {
-      const docRef = doc(db, 'categories', data.categoryId)
-      const docSnap = await getDoc(docRef)
-      setCategory(docSnap.data())
-    }
-    fetch()
-  }, [data.categoryId])
+  // useEffect(() => {
+  //   async function fetch() {
+  //     const docRef = doc(db, 'categories', data.categoryId)
+  //     const docSnap = await getDoc(docRef)
+  //     setCategory(docSnap.data())
+  //   }
+  //   fetch()
+  // }, [data.categoryId])
 
-  useEffect(() => {
-    async function fetchUser() {
-      if (data.userId) {
-        const docRef = doc(db, 'users', data.userId)
-        const docSnap = await getDoc(docRef)
-        // console.log('🚀 ~ fetchUser ~ docSnap:', docSnap.data())
-        if (docSnap.data()) {
-          setUser(docSnap.data())
-        }
-      }
-    }
-    fetchUser()
-  }, [data.userId])
+  // useEffect(() => {
+  //   async function fetchUser() {
+  //     if (data.userId) {
+  //       const docRef = doc(db, 'users', data.userId)
+  //       const docSnap = await getDoc(docRef)
+  //       // console.log('🚀 ~ fetchUser ~ docSnap:', docSnap.data())
+  //       if (docSnap.data()) {
+  //         setUser(docSnap.data())
+  //       }
+  //     }
+  //   }
+  //   fetchUser()
+  // }, [data.userId])
 
   if (!data || !data.id) return null
 
@@ -86,6 +84,8 @@ const PostFeatureItem = ({ data }) => {
     ? new Date(data?.createdAt?.seconds * 1000)
     : new Date()
   const formatDate = new Date(date).toLocaleDateString('vi-VN')
+
+  const { category, user } = data
 
   return (
     <PostFeatureItemStyles>
