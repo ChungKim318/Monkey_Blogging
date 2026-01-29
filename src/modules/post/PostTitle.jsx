@@ -1,11 +1,11 @@
-import { NavLink } from 'react-router'
+import { Link } from 'react-router'
 import React from 'react'
 import styled, { css } from 'styled-components'
 
 const PostTitle = ({ children, className = '', size = 'normal', to = '/' }) => {
   return (
     <PostTitleStyles className={`post-title ${className}`} size={size}>
-      <NavLink to={to}>{children}</NavLink>
+      <Link to={`/${to}`}>{children}</Link>
     </PostTitleStyles>
   )
 }

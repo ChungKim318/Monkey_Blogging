@@ -1,20 +1,20 @@
 import React from 'react'
 import styled from 'styled-components'
-import { NavLink } from 'react-router'
+import { Link } from 'react-router'
 
 const PostMeta = ({
   date = 'Mar 23',
   authorName = 'Andiez Le',
   className = '',
-  to = '/',
+  to = '',
 }) => {
   return (
     <PostMetaStyles className={`post-info ${className}`}>
       <span className="post-time">{date}</span>
       <span className="post-dot"></span>
-      <NavLink to={to}>
+      <Link to={`/author/${to}`}>
         <span className="post-author">{authorName}</span>
-      </NavLink>
+      </Link>
     </PostMetaStyles>
   )
 }

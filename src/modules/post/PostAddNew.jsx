@@ -115,7 +115,6 @@ const PostAddNew = () => {
         trim: true,
       })
       cloneValues.status = Number(values.status)
-      console.log('🚀 ~ addPostHandler ~ cloneValues:', cloneValues)
       const colRef = collection(db, 'posts')
       await addDoc(colRef, {
         ...cloneValues,
@@ -137,6 +136,7 @@ const PostAddNew = () => {
       // handleUploadImage(cloneValues.image)
     } catch (error) {
       setLoading(false)
+      toast.error(error?.message)
       console.log('🚀 ~ addPostHandler ~ error:', error)
     } finally {
       setLoading(false)

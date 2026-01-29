@@ -1,22 +1,28 @@
-import { useParams } from 'react-router'
-import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import Heading from '~/components/layout/Heading'
-import Layout from '~/components/layout/Layout'
-import PostCategory from '~/modules/post/PostCategory'
-import PostImage from '~/modules/post/PostImage'
-import { PostItem } from '~/modules/post/PostItem'
+import React, { useEffect, useState } from 'react'
+import PostRelative from '~/modules/post/PostRelative'
 import PostMeta from '~/modules/post/PostMeta'
-import NotFoundPage from '../notFound/NotFoundPage'
-import { db } from '~/firebase/firebase.config'
-import { query, collection, where, onSnapshot } from 'firebase/firestore'
+import PostImage from '~/modules/post/PostImage'
+import PostCategory from '~/modules/post/PostCategory'
 import parse from 'html-react-parser'
+import NotFoundPage from '../notFound/NotFoundPage'
+import Layout from '~/components/layout/Layout'
+import Heading from '~/components/layout/Heading'
 import AuthorPost from '~/components/author/AuthorPost'
+import { useParams } from 'react-router'
+import { query, collection, where, onSnapshot } from 'firebase/firestore'
+import { PostItem } from '~/modules/post/PostItem'
+import { db } from '~/firebase/firebase.config'
+import slugify from 'slugify/slugify'
 
 const PostDetailPage = () => {
   const { slug } = useParams()
   const [postInfo, setPostInfo] = useState({})
   const { user } = postInfo
+  const date = postInfo?.createdAt?.seconds
+    ? new Date(postInfo?.createdAt?.seconds * 1000)
+    : new Date()
+  const formatDate = new Date(date).toLocaleDateString('vi-VN')
 
   useEffect(() => {
     async function fetchData() {
@@ -31,7 +37,11 @@ const PostDetailPage = () => {
     fetchData()
   }, [slug])
 
-  if (!slug || !postInfo?.title) return <NotFoundPage />
+  useEffect(() => {
+    document.body.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [slug])
+
+  if (!slug) return <NotFoundPage />
   if (!postInfo.title) return null
 
   return (
@@ -47,26 +57,22 @@ const PostDetailPage = () => {
               className="post-feature"
             />
             <div className="post-info">
-              <PostCategory className="mb-6">
+              <PostCategory className="mb-6" to={postInfo?.category?.slug}>
                 {postInfo.category?.name}
               </PostCategory>
               <h1 className="post-heading">{postInfo.title}</h1>
-              <PostMeta />
+              <PostMeta
+                date={formatDate}
+                authorName={postInfo?.user?.name}
+                to={slugify(postInfo?.user?.userName || '', { lower: true })}
+              />
             </div>
           </div>
           <div className="post-content">
             <div className="entry-content">{parse(postInfo.content || '')}</div>
             <AuthorPost userId={user?.id} />
           </div>
-          <div className="post-related">
-            <Heading>Bài viết liên quan</Heading>
-            <div className="grid-layout grid-layout--primary">
-              <PostItem />
-              <PostItem />
-              <PostItem />
-              <PostItem />
-            </div>
-          </div>
+          <PostRelative categoryId={postInfo?.category?.id} />
         </div>
       </Layout>
     </PostDetailPageStyles>

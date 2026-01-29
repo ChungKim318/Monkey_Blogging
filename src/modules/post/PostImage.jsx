@@ -1,15 +1,15 @@
-import { NavLink } from 'react-router'
+import { Link } from 'react-router'
 import React from 'react'
 import styled from 'styled-components'
 
-const PostImage = ({ className = '', url = '', alt = '', to = null }) => {
+const PostImage = ({ className = '', url = '', alt = '', to = '' }) => {
   if (to)
     return (
-      <NavLink to={to} style={{ display: 'inline-block' }}>
+      <Link to={`/${to}`} style={{ display: 'inline-block' }}>
         <PostImageStyles className={`post-image ${className}`}>
           <img src={url} alt={alt} loading="lazy" />
         </PostImageStyles>
-      </NavLink>
+      </Link>
     )
   return (
     <PostImageStyles className={`post-image ${className}`}>

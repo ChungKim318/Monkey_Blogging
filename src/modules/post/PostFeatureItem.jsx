@@ -104,7 +104,7 @@ const PostFeatureItem = ({ data }) => {
           )}
           <PostMeta
             authorName={user?.name}
-            to={(slugify(user?.name || ''), { lower: true })}
+            to={(slugify(user?.userName || ''), { lower: true })}
             date={formatDate}
           />
         </div>
