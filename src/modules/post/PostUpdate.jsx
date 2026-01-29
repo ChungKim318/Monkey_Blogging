@@ -121,6 +121,7 @@ const PostUpdate = () => {
       await updateDoc(docRef, {
         ...values,
         content,
+        // image,
       })
       toast.success('Update post successfully!')
     } catch (error) {

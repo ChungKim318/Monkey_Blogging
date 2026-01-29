@@ -15,13 +15,14 @@ import {
 } from 'firebase/firestore'
 import { db } from '~/firebase/firebase.config'
 import LabelStatus from '~/components/label/LabelStatus'
-import { postStatus } from '~/utils/constants'
+import { postStatus, userRole } from '~/utils/constants'
 import { useNavigate } from 'react-router'
 import ActionView from '~/components/action/ActionView'
 import ActionEdit from '~/components/action/ActionEdit'
 import ActionDelete from '~/components/action/ActionDelete'
 import Swal from 'sweetalert2'
 import { debounce } from 'lodash'
+import { useAuth } from '~/contexts/AuthContext'
 
 const POST_PER_PAGE = 5
 
@@ -124,6 +125,9 @@ const PostManage = () => {
         break
     }
   }
+
+  const { userInfo } = useAuth()
+  if (userInfo?.role !== userRole.ADMIN) return null
 
   return (
     <div>
