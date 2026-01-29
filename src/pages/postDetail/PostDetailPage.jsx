@@ -11,6 +11,7 @@ import NotFoundPage from '../notFound/NotFoundPage'
 import { db } from '~/firebase/firebase.config'
 import { query, collection, where, onSnapshot } from 'firebase/firestore'
 import parse from 'html-react-parser'
+import AuthorPost from '~/components/author/AuthorPost'
 
 const PostDetailPage = () => {
   const { slug } = useParams()
@@ -32,8 +33,6 @@ const PostDetailPage = () => {
 
   if (!slug || !postInfo?.title) return <NotFoundPage />
   if (!postInfo.title) return null
-
-  console.log(postInfo)
 
   return (
     <PostDetailPageStyles>
@@ -57,21 +56,7 @@ const PostDetailPage = () => {
           </div>
           <div className="post-content">
             <div className="entry-content">{parse(postInfo.content || '')}</div>
-            <div className="author">
-              <div className="author-image">
-                <img
-                  src={
-                    user?.avatar ||
-                    'https://i.pinimg.com/1200x/70/95/00/709500826d1e49399ec1b30b06864dfd.jpg'
-                  }
-                  alt=""
-                />
-              </div>
-              <div className="author-content">
-                <h3 className="author-name">{user?.userName}</h3>
-                <p className="author-desc">{user?.desc}</p>
-              </div>
-            </div>
+            <AuthorPost userId={user?.id} />
           </div>
           <div className="post-related">
             <Heading>Bài viết liên quan</Heading>

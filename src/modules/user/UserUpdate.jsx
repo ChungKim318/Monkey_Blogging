@@ -13,6 +13,7 @@ import Radio from '~/components/checkbox/Radio'
 import { userRole, userStatus } from '~/utils/constants'
 import CustomButton from '~/components/button/CustomButton'
 import { db } from '~/firebase/firebase.config'
+import TextArea from '~/components/textarea/TextArea'
 // import useFirebaseImage from '~/hooks/useFirebaseImage'
 
 const UserUpdate = () => {
@@ -94,6 +95,7 @@ const UserUpdate = () => {
         <div className="w-50 h-50 rounded-full mx-auto mb-10">
           <ImageUpload
             className="rounded-full! h-full"
+            image={`https://i.pinimg.com/1200x/70/95/00/709500826d1e49399ec1b30b06864dfd.jpg`}
             /* 
                 onChange={handleSelectImage}
                 handleDeleteImage={handleDeleteImage}
@@ -188,6 +190,12 @@ const UserUpdate = () => {
                 User
               </Radio>
             </FieldCheckBox>
+          </CustomField>
+        </div>
+        <div className="form-layout">
+          <CustomField>
+            <CustomLabel>Description</CustomLabel>
+            <TextArea name="description" control={control} />
           </CustomField>
         </div>
         <CustomButton

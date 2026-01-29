@@ -1,10 +1,9 @@
 import React from 'react'
 import styled, { StyleSheetManager } from 'styled-components'
-import { useController } from 'react-hook-form'
 import PropTypes from 'prop-types'
-import IconEyeOpen from '../icon/IconEyeOpen'
+import { useController } from 'react-hook-form'
 
-const CustomInput = ({
+const TextArea = ({
   name = '',
   type = 'text',
   control,
@@ -16,20 +15,21 @@ const CustomInput = ({
     name,
     defaultValue: '',
   })
+
   return (
     <StyleSheetManager shouldForwardProp={prop => prop !== 'hasIcon'}>
-      <CustomInputStyles hasIcon={children ? true : false}>
-        <input id={name} type={type} {...field} {...props} />
+      <TextAreaStyles hasIcon={children ? true : false}>
+        <textarea id={name} type={type} {...field} {...props} />
         {children && <div className="input-icon">{children}</div>}
-      </CustomInputStyles>
+      </TextAreaStyles>
     </StyleSheetManager>
   )
 }
 
-const CustomInputStyles = styled.div`
+const TextAreaStyles = styled.div`
   position: relative;
   width: 100%;
-  input {
+  textarea {
     width: 100%;
     padding: ${props => (props.hasIcon ? '20px 60px 20px 20px' : '20px')};
     background-color: ${props => props.theme.grayLight};
@@ -37,15 +37,17 @@ const CustomInputStyles = styled.div`
     font-weight: 500;
     transition: all 0.2s linear;
     border: 1px solid transparent;
+    resize: none;
+    min-height: 200px;
   }
-  input:focus {
+  textarea:focus {
     background-color: #fff;
     border-color: ${props => props.theme.primary};
   }
-  input::-webkit-input-placeholder {
+  textarea::-webkit-input-placeholder {
     color: #84878b;
   }
-  input::-moz-input-placeholder {
+  textarea::-moz-input-placeholder {
     color: #84878b;
   }
   .input-icon {
@@ -57,10 +59,10 @@ const CustomInputStyles = styled.div`
   }
 `
 
-CustomInput.propTypes = {
+TextArea.propTypes = {
   name: PropTypes.string,
   type: PropTypes.string,
   children: PropTypes.node,
 }
 
-export default React.memo(CustomInput)
+export default React.memo(TextArea)
